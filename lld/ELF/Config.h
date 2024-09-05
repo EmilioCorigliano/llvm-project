@@ -429,6 +429,11 @@ struct Config {
 
   unsigned threadCount;
 
+  // This option specifies the number of empty slots to leave in the .dynamic
+  // section of ELF shared objects. Empty slots may be needed by post processing
+  // tools, such as the prelinker. The default is 0.
+  unsigned spareDynamicTags = 0;
+
   // If an input file equals a key, remap it to the value.
   llvm::DenseMap<llvm::StringRef, llvm::StringRef> remapInputs;
   // If an input file matches a wildcard pattern, remap it to the value.

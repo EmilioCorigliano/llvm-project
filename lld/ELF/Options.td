@@ -418,6 +418,9 @@ defm soname: Eq<"soname", "Set DT_SONAME">;
 defm sort_section:
   Eq<"sort-section", "Specifies sections sorting rule when linkerscript is used">;
 
+def spare_dynamic_tags: JJ<"spare-dynamic-tags=">,
+  HelpText<"This option specifies the number of empty slots to leave in the .dynamic section of ELF shared objects. Empty slots may be needed by post processing tools, such as the prelinker. When not specified, no spare tags are created.">;
+
 def start_group: F<"start-group">,
   HelpText<"Ignored for compatibility with GNU unless you pass --warn-backrefs">;
 

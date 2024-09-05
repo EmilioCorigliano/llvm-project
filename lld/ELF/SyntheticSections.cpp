@@ -1550,6 +1550,9 @@ DynamicSection<ELFT>::computeContents() {
   if (config->emachine == EM_PPC64)
     addInt(DT_PPC64_OPT, getPPC64TargetInfo()->ppc64DynamicSectionOpt);
 
+  for (unsigned i = 0; i < config->spareDynamicTags; i++)
+    addInt(DT_NULL, 0);
+
   addInt(DT_NULL, 0);
   return entries;
 }

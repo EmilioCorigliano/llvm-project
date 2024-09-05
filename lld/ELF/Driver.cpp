@@ -1595,6 +1595,12 @@ static void readConfigs(opt::InputArgList &args) {
     config->thinLTOJobs = arg->getValue();
   config->threadCount = parallel::strategy.compute_thread_count();
 
+  // --spare-dynamic-tags= takes a positive integer.
+  if (auto *arg = args.getLastArg(OPT_spare_dynamic_tags)) {
+    StringRef v(arg->getValue());
+    llvm::to_integer(v, config->spareDynamicTags, 0);
+  }
+
   if (config->ltoPartitions == 0)
     error("--lto-partitions: number of threads must be > 0");
   if (!get_threadpool_strategy(config->thinLTOJobs))
