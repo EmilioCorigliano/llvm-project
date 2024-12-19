@@ -806,15 +806,17 @@ void ARMAsmPrinter::emitAttributes() {
   }
 
   // We currently do not support using R9 as the TLS pointer.
-  if (STI.isRWPI() || STI.isSinglePicBase())
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9IsSB);
-  else if (STI.isR9Reserved())
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9Reserved);
-  else
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9IsGPR);
+  if (!STI.isSinglePicBase()) {
+    if (STI.isRWPI())
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9IsSB);
+    else if (STI.isR9Reserved())
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9Reserved);
+    else
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9IsGPR);
+  }
 }
 
 //===----------------------------------------------------------------------===//
