@@ -356,6 +356,7 @@ static void parseCodeGenArgs(Fortran::frontend::CodeGenOptions &opts,
             .Case("ropi", llvm::Reloc::ROPI)
             .Case("rwpi", llvm::Reloc::RWPI)
             .Case("ropi-rwpi", llvm::Reloc::ROPI_RWPI)
+            .Case("single-pic-base", llvm::Reloc::SINGLE_PIC_BASE)
             .Default(std::nullopt);
     if (relocModel.has_value())
       opts.setRelocationModel(*relocModel);

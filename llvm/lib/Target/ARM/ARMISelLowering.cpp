@@ -3918,6 +3918,7 @@ SDValue ARMTargetLowering::LowerGlobalAddress(SDValue Op,
 
 SDValue ARMTargetLowering::LowerGlobalAddressELF(SDValue Op,
                                                  SelectionDAG &DAG) const {
+  // DAG.setGraphColor(Op.getNode(), "green");
   EVT PtrVT = getPointerTy(DAG.getDataLayout());
   SDLoc dl(Op);
   const GlobalValue *GV = cast<GlobalAddressSDNode>(Op)->getGlobal();
@@ -3929,10 +3930,30 @@ SDValue ARMTargetLowering::LowerGlobalAddressELF(SDValue Op,
     if (SDValue V = promoteToConstantPool(this, GV, DAG, PtrVT, dl))
       return V;
 
-  if (isPositionIndependent()) {
+  if (Subtarget->isSinglePicBase()) {
+    bool UseGOT_BREL = !isa<Function>(GV);
+    SDValue G = DAG.getTargetGlobalAddress(GV, dl, PtrVT, 0, UseGOT_BREL ? ARMII::MO_GOT_BREL : 0);
+
+    if (UseGOT_BREL) {
+      ARMConstantPoolValue *CPV = ARMConstantPoolConstant::Create(GV, ARMCP::GOT_BREL);
+      SDValue G_const = DAG.getTargetConstantPool(CPV, PtrVT, Align(4));
+      SDValue G_wrapped = DAG.getNode(ARMISD::Wrapper, dl, MVT::i32, G_const);
+      SDValue G_wrapped_loaded = DAG.getLoad(PtrVT, dl, DAG.getEntryNode(), G_wrapped, MachinePointerInfo::getConstantPool(DAG.getMachineFunction()));
+
+      SDValue r9 = DAG.getCopyFromReg(DAG.getEntryNode(), dl, ARM::R9, PtrVT);
+      SDValue got_entry_address = DAG.getNode(ISD::ADD, dl, PtrVT, r9, G_wrapped_loaded);
+      SDValue our_address = DAG.getLoad(PtrVT, dl, DAG.getEntryNode(), got_entry_address,
+                                        MachinePointerInfo::getGOT(DAG.getMachineFunction()));
+
+      return our_address;
+    } else {
+      outs() << "Using ARMISD::WrapperPIC for " << GV->getName() << "\n";
+      return DAG.getNode(ARMISD::WrapperPIC, dl, PtrVT, G);
+    }
+  } else if (isPositionIndependent()) {
     bool UseGOT_PREL = !TM.shouldAssumeDSOLocal(*GV->getParent(), GV);
     SDValue G = DAG.getTargetGlobalAddress(GV, dl, PtrVT, 0,
-                                           UseGOT_PREL ? ARMII::MO_GOT : 0);
+                                           UseGOT_PREL ? ARMII::MO_GOT_PREL : 0);
     SDValue Result = DAG.getNode(ARMISD::WrapperPIC, dl, PtrVT, G);
     if (UseGOT_PREL)
       Result =

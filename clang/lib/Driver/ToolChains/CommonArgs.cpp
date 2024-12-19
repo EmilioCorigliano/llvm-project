@@ -1760,6 +1760,8 @@ const char *tools::RelocationModelName(llvm::Reloc::Model Model) {
     return "rwpi";
   case llvm::Reloc::ROPI_RWPI:
     return "ropi-rwpi";
+  case llvm::Reloc::SINGLE_PIC_BASE:
+    return "single-pic-base";
   }
   llvm_unreachable("Unknown Reloc::Model kind");
 }
@@ -1940,8 +1942,17 @@ tools::ParsePICArgs(const ToolChain &ToolChain, const ArgList &Args) {
     RWPI = true;
   }
 
-  // ROPI and RWPI are not compatible with PIC or PIE.
-  if ((ROPI || RWPI) && (PIC || PIE))
+  bool SINGLE_PIC_BASE = false;
+  Arg* LastSINGLE_PIC_BASEArg = Args.getLastArg(options::OPT_msingle_pic_base, options::OPT_mno_single_pic_base);
+  if (LastSINGLE_PIC_BASEArg && LastSINGLE_PIC_BASEArg->getOption().matches(options::OPT_msingle_pic_base)) {
+    if (!EmbeddedPISupported)
+        ToolChain.getDriver().Diag(diag::err_drv_unsupported_opt_for_target)
+            << LastRWPIArg->getSpelling() << Triple.str();
+    SINGLE_PIC_BASE = true;
+  }
+
+  // ROPI and RWPI are not compatible with PIC, PIE or SINLE_PIC_BASE.
+  if ((ROPI || RWPI) && (PIC || PIE || SINGLE_PIC_BASE))
     ToolChain.getDriver().Diag(diag::err_drv_ropi_rwpi_incompatible_with_pic);
 
   if (Triple.isMIPS()) {
@@ -1961,10 +1972,14 @@ tools::ParsePICArgs(const ToolChain &ToolChain, const ArgList &Args) {
     IsPICLevelTwo = false;
   }
 
-  if (PIC)
-    return std::make_tuple(llvm::Reloc::PIC_, IsPICLevelTwo ? 2U : 1U, PIE);
-
   llvm::Reloc::Model RelocM = llvm::Reloc::Static;
+  if (SINGLE_PIC_BASE || PIC) {
+    if (SINGLE_PIC_BASE)
+      RelocM = llvm::Reloc::SINGLE_PIC_BASE;
+    else if (PIC)
+      RelocM = llvm::Reloc::PIC_;
+    return std::make_tuple(RelocM, IsPICLevelTwo ? 2U : 1U, PIE);
+  }
   if (ROPI && RWPI)
     RelocM = llvm::Reloc::ROPI_RWPI;
   else if (ROPI)

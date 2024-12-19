@@ -4912,8 +4912,8 @@ bool ARMBaseInstrInfo::verifyInstruction(const MachineInstr &MI,
 void ARMBaseInstrInfo::expandLoadStackGuardBase(MachineBasicBlock::iterator MI,
                                                 unsigned LoadImmOpc,
                                                 unsigned LoadOpc) const {
-  assert(!Subtarget.isROPI() && !Subtarget.isRWPI() &&
-         "ROPI/RWPI not currently supported with stack guard");
+  assert(!Subtarget.isROPI() && !Subtarget.isRWPI() && !Subtarget.isSinglePicBase() &&
+         "ROPI/RWPI/SINGLE_PIC_BASE not currently supported with stack guard");
 
   MachineBasicBlock &MBB = *MI->getParent();
   DebugLoc DL = MI->getDebugLoc();
@@ -4961,7 +4961,7 @@ void ARMBaseInstrInfo::expandLoadStackGuardBase(MachineBasicBlock::iterator MI,
       else if (IsIndirect)
         TargetFlags |= ARMII::MO_COFFSTUB;
     } else if (IsIndirect) {
-      TargetFlags |= ARMII::MO_GOT;
+      TargetFlags |= ARMII::MO_GOT_PREL;
     }
 
     if (LoadImmOpc == ARM::tMOVi32imm) { // Thumb-1 execute-only
@@ -5549,7 +5549,8 @@ ARMBaseInstrInfo::getSerializableBitmaskMachineOperandTargetFlags() const {
 
   static const std::pair<unsigned, const char *> TargetFlags[] = {
       {MO_COFFSTUB, "arm-coffstub"},
-      {MO_GOT, "arm-got"},
+      {MO_GOT_PREL, "arm-got"},
+      {MO_GOT_BREL, "arm-got-brel"},
       {MO_SBREL, "arm-sbrel"},
       {MO_DLLIMPORT, "arm-dllimport"},
       {MO_SECREL, "arm-secrel"},

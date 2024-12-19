@@ -233,6 +233,7 @@ static RelExpr toPlt(RelExpr expr) {
   case R_PC:
     return R_PLT_PC;
   case R_ABS:
+  case R_MX_ABS: // ?
     return R_PLT;
   case R_GOTREL:
     return R_PLT_GOTREL;

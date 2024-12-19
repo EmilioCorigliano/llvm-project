@@ -248,7 +248,7 @@ void ARMSubtarget::initSubtargetFeatures(StringRef CPU, StringRef FS) {
       (Options.UnsafeFPMath || isTargetDarwin()))
     HasNEONForFP = true;
 
-  if (isRWPI())
+  if (isRWPI() || isSinglePicBase())
     ReserveR9 = true;
 
   // If MVEVectorCostFactor is still 0 (has not been set to anything else), default it to 2
@@ -349,6 +349,9 @@ bool ARMSubtarget::isROPI() const {
 bool ARMSubtarget::isRWPI() const {
   return TM.getRelocationModel() == Reloc::RWPI ||
          TM.getRelocationModel() == Reloc::ROPI_RWPI;
+}
+bool ARMSubtarget::isSinglePicBase() const {
+  return TM.getRelocationModel() == Reloc::SINGLE_PIC_BASE;
 }
 
 bool ARMSubtarget::isGVIndirectSymbol(const GlobalValue *GV) const {

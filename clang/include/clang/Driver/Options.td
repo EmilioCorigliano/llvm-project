@@ -3560,6 +3560,11 @@ defm rwpi : BoolFOption<"rwpi",
   PosFlag<SetTrue, [], [ClangOption, FlangOption, CC1Option],
           "Generate read-write position independent code (ARM only)">,
   NegFlag<SetFalse, [], [ClangOption, FlangOption, CC1Option]>>;
+defm single_pic_base : BoolOption<"m", "single-pic-base",
+  LangOpts<"SINGLE_PIC_BASE">, DefaultFalse,
+  PosFlag<SetTrue, [], [ClangOption, FlangOption, CC1Option],
+          "Reserves R9 as GOT base address (ARM only)">,
+  NegFlag<SetFalse, [], [ClangOption, FlangOption, CC1Option]>>;
 def fplugin_EQ : Joined<["-"], "fplugin=">, Group<f_Group>,
   Flags<[NoXarchOption]>, MetaVarName<"<dsopath>">,
   HelpText<"Load the named plugin (dynamic shared object)">;
@@ -6750,9 +6755,9 @@ def migrator_no_finalize_removal : Flag<["-"], "no-finalize-removal">,
 let Visibility = [CC1Option, CC1AsOption, FC1Option] in {
 
 def mrelocation_model : Separate<["-"], "mrelocation-model">,
-  HelpText<"The relocation model to use">, Values<"static,pic,ropi,rwpi,ropi-rwpi,dynamic-no-pic">,
+  HelpText<"The relocation model to use">, Values<"static,pic,ropi,rwpi,ropi-rwpi,dynamic-no-pic,single-pic-base">,
   NormalizedValuesScope<"llvm::Reloc">,
-  NormalizedValues<["Static", "PIC_", "ROPI", "RWPI", "ROPI_RWPI", "DynamicNoPIC"]>,
+  NormalizedValues<["Static", "PIC_", "ROPI", "RWPI", "ROPI_RWPI", "DynamicNoPIC", "SINGLE_PIC_BASE"]>,
   MarshallingInfoEnum<CodeGenOpts<"RelocationModel">, "PIC_">;
 def debug_info_kind_EQ : Joined<["-"], "debug-info-kind=">;
 

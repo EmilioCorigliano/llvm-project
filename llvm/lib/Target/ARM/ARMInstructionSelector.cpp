@@ -608,6 +608,10 @@ bool ARMInstructionSelector::insertComparison(CmpConstants Helper, InsertInfo I,
 
 bool ARMInstructionSelector::selectGlobal(MachineInstrBuilder &MIB,
                                           MachineRegisterInfo &MRI) const {
+  if (STI.isSinglePicBase()) {
+    LLVM_DEBUG(dbgs() << "SINGLE_PIC_BASE not supported yet\n");
+    return false;
+  }
   if ((STI.isROPI() || STI.isRWPI()) && !STI.isTargetELF()) {
     LLVM_DEBUG(dbgs() << "ROPI and RWPI only supported for ELF\n");
     return false;
@@ -680,7 +684,7 @@ bool ARMInstructionSelector::selectGlobal(MachineInstrBuilder &MIB,
     if (STI.isTargetDarwin())
       TargetFlags |= ARMII::MO_NONLAZY;
     if (STI.isGVInGOT(GV))
-      TargetFlags |= ARMII::MO_GOT;
+      TargetFlags |= ARMII::MO_GOT_PREL;
     MIB->getOperand(1).setTargetFlags(TargetFlags);
 
     if (Indirect) {

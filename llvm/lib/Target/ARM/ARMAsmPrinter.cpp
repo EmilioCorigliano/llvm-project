@@ -806,15 +806,17 @@ void ARMAsmPrinter::emitAttributes() {
   }
 
   // We currently do not support using R9 as the TLS pointer.
-  if (STI.isRWPI())
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9IsSB);
-  else if (STI.isR9Reserved())
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9Reserved);
-  else
-    ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
-                      ARMBuildAttrs::R9IsGPR);
+  if (!STI.isSinglePicBase()) {
+    if (STI.isRWPI())
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9IsSB);
+    else if (STI.isR9Reserved())
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9Reserved);
+    else
+      ATS.emitAttribute(ARMBuildAttrs::ABI_PCS_R9_use,
+                        ARMBuildAttrs::R9IsGPR);
+  }
 }
 
 //===----------------------------------------------------------------------===//
@@ -850,6 +852,8 @@ getModifierVariantKind(ARMCP::ARMCPModifier Modifier) {
     return MCSymbolRefExpr::VK_ARM_SBREL;
   case ARMCP::GOT_PREL:
     return MCSymbolRefExpr::VK_ARM_GOT_PREL;
+  case ARMCP::GOT_BREL:
+    return MCSymbolRefExpr::VK_ARM_GOT_BREL;
   case ARMCP::SECREL:
     return MCSymbolRefExpr::VK_SECREL;
   }

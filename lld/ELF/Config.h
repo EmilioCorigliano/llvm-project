@@ -88,7 +88,7 @@ enum class SortSectionPolicy {
 };
 
 // For --target2
-enum class Target2Policy { Abs, Rel, GotRel };
+enum class Target2Policy { Abs, Rel, GotRel, MxAbs };
 
 // For tracking ARM Float Argument PCS
 enum class ARMVFPArgKind { Default, Base, VFP, ToolChain };
