@@ -730,6 +730,8 @@ static Target2Policy getTarget2(opt::InputArgList &args) {
     return Target2Policy::Rel;
   if (s == "abs")
     return Target2Policy::Abs;
+  if (s == "mx-data-rel")
+    return Target2Policy::MxAbs;
   if (s == "got-rel")
     return Target2Policy::GotRel;
   error("unknown --target2 option: " + s);

@@ -140,6 +140,8 @@ RelExpr ARM::getRelExpr(RelType type, const Symbol &s,
       return R_PC;
     if (config->target2 == Target2Policy::Abs)
       return R_ABS;
+    if (config->target2 == Target2Policy::MxAbs)
+      return R_MX_ABS;
     return R_GOT_PC;
   case R_ARM_TLS_GD32:
     return R_TLSGD_PC;

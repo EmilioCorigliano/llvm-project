@@ -677,6 +677,9 @@ uint64_t InputSectionBase::getRelocTargetVA(const InputFile *file, RelType type,
   case R_RISCV_ADD:
   case R_RISCV_LEB128:
     return sym.getVA(a);
+  case R_MX_ABS:
+    // Do not leave relocations behind and subtract DATA_BASE
+    return sym.getVA(a) - sym.getGotVA();
   case R_ADDEND:
     return a;
   case R_RELAX_HINT:
