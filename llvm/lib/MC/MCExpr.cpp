@@ -257,6 +257,7 @@ StringRef MCSymbolRefExpr::getVariantKindName(VariantKind Kind) {
   case VK_X86_PLTOFF: return "PLTOFF";
   case VK_ARM_NONE: return "none";
   case VK_ARM_GOT_PREL: return "GOT_PREL";
+  case VK_ARM_GOT_BREL: return "GOT_BREL";
   case VK_ARM_TARGET1: return "target1";
   case VK_ARM_TARGET2: return "target2";
   case VK_ARM_PREL31: return "prel31";
@@ -495,6 +496,7 @@ MCSymbolRefExpr::getVariantKindForName(StringRef Name) {
     .Case("ldplt", VK_Hexagon_LD_PLT)
     .Case("none", VK_ARM_NONE)
     .Case("got_prel", VK_ARM_GOT_PREL)
+    .Case("got_brel", VK_ARM_GOT_BREL)
     .Case("target1", VK_ARM_TARGET1)
     .Case("target2", VK_ARM_TARGET2)
     .Case("prel31", VK_ARM_PREL31)

@@ -20,6 +20,7 @@
 #include "ARMMachineFunctionInfo.h"
 #include "ARMSubtarget.h"
 #include "MCTargetDesc/ARMAddressingModes.h"
+#include "MCTargetDesc/ARMBaseInfo.h"
 #include "llvm/CodeGen/LivePhysRegs.h"
 #include "llvm/CodeGen/MachineFrameInfo.h"
 #include "llvm/CodeGen/MachineFunctionPass.h"
@@ -2649,9 +2650,13 @@ bool ARMExpandPseudo::ExpandMI(MachineBasicBlock &MBB,
 
       if (IsPIC) {
         unsigned PCAdj = IsARM ? 8 : 4;
-        auto Modifier = (Flags & ARMII::MO_GOT)
-                            ? ARMCP::GOT_PREL
-                            : ARMCP::no_modifier;
+
+        auto Modifier = ARMCP::no_modifier;
+        if (Flags & ARMII::MO_GOT_PREL) {
+          Modifier = ARMCP::GOT_PREL;
+        } else if (Flags & ARMII::MO_GOT_BREL) {
+          Modifier = ARMCP::GOT_BREL;
+        }
         ARMPCLabelIndex = AFI->createPICLabelUId();
         CPV = ARMConstantPoolConstant::Create(
             GV, ARMPCLabelIndex, ARMCP::CPValue, PCAdj, Modifier,

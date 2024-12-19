@@ -447,7 +447,7 @@ static bool ExecuteAssemblerImpl(AssemblerInvocation &Opts,
   bool PIC = false;
   if (Opts.RelocationModel == "static") {
     PIC = false;
-  } else if (Opts.RelocationModel == "pic") {
+  } else if (Opts.RelocationModel == "pic" || Opts.RelocationModel == "single-pic-base") {
     PIC = true;
   } else {
     assert(Opts.RelocationModel == "dynamic-no-pic" &&

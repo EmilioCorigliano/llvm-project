@@ -94,7 +94,7 @@ bool TargetMachine::isLargeGlobalValue(const GlobalValue *GVal) const {
 }
 
 bool TargetMachine::isPositionIndependent() const {
-  return getRelocationModel() == Reloc::PIC_;
+  return getRelocationModel() == Reloc::PIC_ || getRelocationModel() == Reloc::SINGLE_PIC_BASE;
 }
 
 /// Reset the target options based on the function's attributes.

@@ -109,6 +109,8 @@ unsigned ARMELFObjectWriter::GetRelocTypeInner(const MCValue &Target,
         return ELF::R_ARM_TLS_IE32;
       case MCSymbolRefExpr::VK_ARM_GOT_PREL:
         return ELF::R_ARM_GOT_PREL;
+      case MCSymbolRefExpr::VK_ARM_GOT_BREL:
+        return ELF::R_ARM_GOT_BREL;
       case MCSymbolRefExpr::VK_ARM_PREL31:
         return ELF::R_ARM_PREL31;
       }
@@ -222,6 +224,8 @@ unsigned ARMELFObjectWriter::GetRelocTypeInner(const MCValue &Target,
       return ELF::R_ARM_GOTOFF32;
     case MCSymbolRefExpr::VK_ARM_GOT_PREL:
       return ELF::R_ARM_GOT_PREL;
+    case MCSymbolRefExpr::VK_ARM_GOT_BREL:
+      return ELF::R_ARM_GOT_BREL;
     case MCSymbolRefExpr::VK_ARM_TARGET1:
       return ELF::R_ARM_TARGET1;
     case MCSymbolRefExpr::VK_ARM_TARGET2:

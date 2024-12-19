@@ -419,6 +419,7 @@ public:
 
   bool isROPI() const;
   bool isRWPI() const;
+  bool isSinglePicBase() const;
 
   bool useMachineScheduler() const { return UseMISched; }
   bool useMachinePipeliner() const { return UseMIPipeliner; }

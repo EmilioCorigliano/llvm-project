@@ -146,7 +146,9 @@ codegen::RegisterCodeGenFlags::RegisterCodeGenFlags() {
               Reloc::RWPI, "rwpi",
               "Read-write data relocatable, accessed relative to static base"),
           clEnumValN(Reloc::ROPI_RWPI, "ropi-rwpi",
-                     "Combination of ropi and rwpi")));
+                     "Combination of ropi and rwpi"),
+          clEnumValN(Reloc::SINGLE_PIC_BASE, "single-pic-base",
+                     "R9 points to the base of the data segment")));
   CGBINDOPT(RelocModel);
 
   static cl::opt<ThreadModel::Model> ThreadModel(

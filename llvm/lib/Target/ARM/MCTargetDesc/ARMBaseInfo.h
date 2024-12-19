@@ -262,8 +262,8 @@ namespace ARMII {
     /// stub symbols on windows.
     MO_COFFSTUB = 0x4,
 
-    /// MO_GOT - On a symbol operand, this represents a GOT relative relocation.
-    MO_GOT = 0x8,
+    /// MO_GOT_PREL - On a symbol operand, this represents a GOT relocation relative to the PC.
+    MO_GOT_PREL = 0x8,
 
     /// MO_SBREL - On a symbol operand, this represents a static base relative
     /// relocation. Used in movw and movt instructions.
@@ -307,7 +307,10 @@ namespace ARMII {
     /// containing
     /// bits 24 through 31 of the address. Used only with Thumb1 MOV and ADD
     // instructions.
-    MO_HI_8_15 = 0x800
+    MO_HI_8_15 = 0x800,
+
+    /// MO_GOT_BREL - On a symbol operand, this represents a GOT relocation relative to the base of the GOT.
+    MO_GOT_BREL = 0x1000,
   };
 
   enum {

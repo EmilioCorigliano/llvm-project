@@ -47,6 +47,7 @@ namespace ARMCP {
     no_modifier, /// None
     TLSGD,       /// Thread Local Storage (General Dynamic Mode)
     GOT_PREL,    /// Global Offset Table, PC Relative
+    GOT_BREL,    /// Global Offset Table, Base Relative
     GOTTPOFF,    /// Global Offset Table, Thread Pointer Offset
     TPOFF,       /// Thread Pointer Offset
     SECREL,      /// Section Relative (Windows TLS)
